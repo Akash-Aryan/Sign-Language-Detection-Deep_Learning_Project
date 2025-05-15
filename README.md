@@ -1,26 +1,42 @@
-# Sign-Language-Detection-Deep_Learning_Project
 
-![9AP7Hn_V_oPorT5JRLn1GHBIO5I](https://github.com/user-attachments/assets/d2e81fff-7dc0-4d9e-86d1-5c7087f4b1f3)
+# 🤟 Sign Language Detection using Deep Learning
 
-Welcome to the Sign Language Detection project! This deep learning-based system is designed to recognize hand gestures representing alphabets in sign language. It uses image classification techniques and Convolutional Neural Networks (CNNs) to identify and interpret hand gestures, bridging communication gaps for the hearing and speech impaired.
+![9AP7Hn_V_oPorT5JRLn1GHBIO5I](https://github.com/user-attachments/assets/93e7aa7a-b246-4332-812c-48f1225a9c04)
+
+
+Welcome to the Sign Language Detection project — a powerful image classification system using Convolutional Neural Networks (CNNs) to detect hand gestures that represent alphabets in American Sign Language (ASL). This deep learning project can be used to aid communication for the hearing or speech impaired.
 
 ---
 
 ## 🧩 Table of Contents
 
-- [📁 Project Structure](#-project-structure)
 - [🎯 Objective](#-objective)
-- [🎥 Demo (Coming Soon)](#-demo-coming-soon)
+- [📁 Project Structure](#-project-structure)
 - [📦 Requirements](#-requirements)
 - [📸 Dataset Overview](#-dataset-overview)
 - [🧠 Model Architecture](#-model-architecture)
 - [🏋️‍♂️ Training Process](#-training-process)
-- [📊 Results](#-results)
+- [📊 Evaluation Metrics](#-evaluation-metrics)
+- [🔄 Data Augmentation](#-data-augmentation)
+- [🚀 Transfer Learning (Optional)](#-transfer-learning-optional)
 - [📽️ Real-Time Prediction](#-real-time-prediction)
-- [📌 Future Improvements](#-future-improvements)
+- [📤 Deployment Ideas](#-deployment-ideas)
+- [📈 Results](#-results)
+- [🧾 Key Learnings](#-key-learnings)
+- [📌 Known Issues](#-known-issues)
 - [🙌 Contribution](#-contribution)
 - [👨‍💻 Author](#-author)
 - [📜 License](#-license)
+- [🌟 Show Your Support](#-show-your-support)
+
+---
+
+## 🎯 Objective
+
+- 🧠 Train a CNN to recognize hand gestures representing ASL alphabets (A–Z)
+- 📊 Build a robust model that achieves high accuracy on unseen data
+- 📸 Optionally integrate webcam input for real-time prediction
+- 🌐 Explore web or mobile deployment for accessibility
 
 ---
 
@@ -28,204 +44,245 @@ Welcome to the Sign Language Detection project! This deep learning-based system 
 
 ```bash
 Sign-Language-Detection-Deep_Learning_Project/
-├── Hand-Gesture-Dataset/        # 📸 Dataset of labeled gesture images
-├── model/                       # 🤖 Saved model files (e.g., model.h5)
-├── notebooks/                   # 📓 Jupyter Notebooks for training & experiments
-├── app/                         # 🌐 (Optional) Web or GUI interface for predictions
-├── requirements.txt             # 📦 Python dependencies
-├── README.md                    # 📘 Project documentation
-└── train_model.py               # 🧠 Main training script
+├── Hand-Gesture-Dataset/        # 📸 Labeled dataset of hand gestures
+├── model/                       # 🤖 Saved trained model files
+├── app/                         # 🌐 Web UI or GUI app (optional)
+├── notebooks/                   # 📓 Jupyter notebooks for training/testing
+├── train_model.py               # 🧠 Main model training script
+├── requirements.txt             # 📦 Required Python packages
+└── README.md                    # 📘 Project documentation
 ````
-
----
-
-## 🎯 Objective
-
-The primary goals of this project are:
-
-* 🤖 Develop a deep learning model to classify static hand gestures
-* 🧠 Train the model on a diverse dataset of American Sign Language (ASL) alphabets
-* 📦 Save and deploy the model for inference
-* 📸 Explore integration with real-time image/video inputs using OpenCV
-
----
-
-## 🎥 Demo (Coming Soon)
-
-🔜 A demo video or GIF will be added here to show the real-time detection in action.
-![all-symbols](https://github.com/user-attachments/assets/11c26879-2120-40b0-b890-4f8bcbefc11a)
-
 
 ---
 
 ## 📦 Requirements
 
-Install the dependencies using:
+Install all required dependencies with:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Or manually install key packages:
+Main libraries used:
 
-```bash
-pip install tensorflow keras opencv-python numpy matplotlib scikit-learn
-```
+* `tensorflow`, `keras` – Deep Learning
+* `opencv-python` – Image capture & processing
+* `scikit-learn` – Metrics and preprocessing
+* `matplotlib`, `seaborn` – Data visualization
+* `numpy`, `pandas` – Data handling
 
 ---
 
 ## 📸 Dataset Overview
+![all-symbols](https://github.com/user-attachments/assets/5bbeb289-c43c-4018-a171-f063c4d420d5)
 
-The dataset used includes images of hand signs representing English alphabets (A–Z). Each folder is labeled by the alphabet it represents.
 
-### 🏷️ Sample Format:
+* Static images of hand gestures representing ASL alphabets (A to Z)
+* Images are stored in subfolders named by class labels (e.g., `A/`, `B/`, …)
+* Sample size may vary per class
 
-```bash
-Hand-Gesture-Dataset/
-├── A/
-│   ├── img1.jpg
-│   ├── img2.jpg
-│   └── ...
-├── B/
-│   └── ...
-└── ...
-```
-
-### 📊 Suggested Preprocessing:
+🧹 **Preprocessing Steps:**
 
 * Resize to `64x64` or `128x128`
-* Normalize pixel values to \[0, 1]
-* Apply image augmentation (rotation, flipping, etc.) for generalization
+* Normalize pixel values
+* Encode labels to one-hot vectors
 
 ---
 
 ## 🧠 Model Architecture
 
-A CNN model was used due to its excellent performance in image classification tasks.
-
-### ✅ Model Summary:
-
-* **Input Layer**: `64x64x3` RGB image
-* **Conv2D + ReLU**
-* **MaxPooling2D**
-* **Conv2D + ReLU**
-* **MaxPooling2D**
-* **Flatten**
-* **Dense (128) + ReLU**
-* **Output Layer (26 units) + Softmax**
-
-### 💻 Compiling the Model:
+Baseline CNN Model:
 
 ```python
-model.compile(
-    optimizer='adam',
-    loss='categorical_crossentropy',
-    metrics=['accuracy']
-)
+model = Sequential([
+    Conv2D(32, (3,3), activation='relu', input_shape=(64, 64, 3)),
+    MaxPooling2D(2,2),
+    Conv2D(64, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+    Flatten(),
+    Dense(128, activation='relu'),
+    Dense(26, activation='softmax')  # 26 output classes (A–Z)
+])
+```
+
+✔️ Compiled with:
+
+```python
+model.compile(optimizer='adam', 
+              loss='categorical_crossentropy', 
+              metrics=['accuracy'])
 ```
 
 ---
 
 ## 🏋️‍♂️ Training Process
 
-### 📚 Training Script Steps:
+1. Load dataset from directory
+2. Resize & normalize images
+3. Split into training, validation, and test sets
+4. Train model using `model.fit()`
+5. Save trained model for future predictions
 
-1. **Load Dataset**
-2. **Preprocess Images** (resize, normalize)
-3. **Label Encode** alphabets
-4. **Split Data** into training and testing sets
-5. **Define CNN model**
-6. **Train the model** using `model.fit()`
-7. **Evaluate and Save** using `.evaluate()` and `.save()`
-
-### 🧪 Evaluation Metrics:
-
-* Accuracy
-* Loss (training vs validation)
-* Confusion Matrix (optional)
+📂 Output saved in the `model/` folder.
 
 ---
 
-## 📊 Results
+## 📊 Evaluation Metrics
 
-| Metric              | Value (Example) |
-| ------------------- | --------------- |
-| Training Accuracy   | 96.5%           |
-| Validation Accuracy | 93.2%           |
-| Final Test Accuracy | 91.7%           |
-| Epochs              | 15              |
-| Model Size          | \~2.3 MB        |
-
-📈 Use `matplotlib` to plot training vs validation curves:
+Use `scikit-learn` to evaluate model performance:
 
 ```python
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.legend(['train', 'val'])
-plt.title('Model Accuracy')
+from sklearn.metrics import classification_report, confusion_matrix
+
+y_pred = model.predict(X_test)
+print(classification_report(y_true, y_pred_classes))
 ```
+
+✅ Includes:
+
+* Accuracy
+* Precision / Recall / F1-score
+* Confusion Matrix
+
+---
+
+## 🔄 Data Augmentation
+
+To improve generalization, the model uses:
+
+```python
+ImageDataGenerator(
+    rotation_range=10,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.1,
+    zoom_range=0.1,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
+```
+
+📌 **Why?** Prevents overfitting and mimics real-world hand variation.
+
+---
+
+## 🚀 Transfer Learning (Optional)
+
+For better accuracy and faster convergence, consider:
+
+```python
+from tensorflow.keras.applications import MobileNetV2
+```
+
+📌 Benefits:
+
+* Pre-trained on ImageNet
+* Requires fewer training samples
+* Smaller size for mobile deployment
 
 ---
 
 ## 📽️ Real-Time Prediction
 
-💡 Add webcam support using OpenCV for live gesture recognition:
+Use OpenCV to capture webcam input and make live predictions:
 
 ```python
-import cv2
 cap = cv2.VideoCapture(0)
-# Capture frames, detect ROI, preprocess, and predict using model.predict()
+while True:
+    ret, frame = cap.read()
+    # Crop, preprocess and predict with model
 ```
+
+🔧 Real-time prediction requires:
+
+* ROI extraction
+* Frame preprocessing
+* Model inference
 
 ---
 
-## 📌 Future Improvements
+## 📤 Deployment Ideas
 
-* 🖥️ Real-time GUI using Tkinter or Streamlit
-* 🌐 Web deployment using Flask/FastAPI
-* 🤳 Mobile App using TensorFlow Lite
-* 🧠 Use Transfer Learning (e.g., MobileNetV2) for better performance
-* 🧾 Add multi-language gesture support (ISL, BSL, etc.)
+* 🖥️ **Web App**: Use Flask, FastAPI or Streamlit
+* 📱 **Mobile App**: Convert to `.tflite` for Android
+* 🔌 **API**: Expose model via REST endpoint
+* 🧠 **Edge Devices**: Raspberry Pi with PiCamera
+
+---
+
+## 📈 Results
+
+| Metric              | Value (Sample) |
+| ------------------- | -------------- |
+| Training Accuracy   | 96.5%          |
+| Validation Accuracy | 93.2%          |
+| Test Accuracy       | \~91%          |
+| Epochs Trained      | 15             |
+| Model Size          | \~2.3 MB       |
+
+📊 Training Graphs:
+
+* Accuracy vs Epochs
+* Loss vs Epochs
+
+---
+
+## 🧾 Key Learnings
+
+> 💭 During this project, I learned:
+
+* The power of CNNs in visual recognition tasks
+* Importance of clean and augmented datasets
+* Real-time model inference via OpenCV
+* Basics of model deployment on different platforms
+* Evaluating models using advanced metrics
+
+---
+
+## 📌 Known Issues
+
+* ⚠️ Gesture detection may be poor in low-light
+* 🐢 Model prediction can lag without GPU
+* ✋ Prediction can fail if hand is partially out of frame
 
 ---
 
 ## 🙌 Contribution
 
-Contributions are welcome! Feel free to:
+Contributions are welcome!
+To contribute:
 
-* Fork the repository
-* Create a new branch
-* Submit a pull request
+1. Fork this repository
+2. Create a new branch
+3. Make changes
+4. Submit a pull request
 
-### 🛠️ Suggestions:
-
-* Add a better dataset
-* Improve model performance
-* Add UI/UX for easier testing
-* Implement sentence-level recognition
+Feel free to suggest features or report bugs!
 
 ---
 
 ## 👨‍💻 Author
 
 **Akash Aryan**
-📧 Email: akashanand1291@gmail.com
-🔗 GitHub: [https://github.com/Akash-Aryan](https://github.com/Akash-Aryan)
+🔗 [GitHub Profile](https://github.com/Akash-Aryan)
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**.
+See the [LICENSE](LICENSE) file for more details.
 
 ---
 
 ## 🌟 Show Your Support
 
-If you found this project helpful or interesting:
+If you found this project useful:
 
-* ⭐ Star the repo
-* 🛠️ Fork and contribute
-* 📣 Share with others
+* ⭐ Star this repository
+* 🍴 Fork it and build your version
+* 📣 Share with others!
 
-Thank you for visiting! 🙏
+---
+
+```
